@@ -4,17 +4,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
-class ILS1 {
+
+class ILS2 {
 
     List<List<Integer>> cycles_X;
     List<List<Integer>> cycles_Y;
     List<List<Integer>> distanceMatrix;
     Instance kro200;
     double bestCyclesLength = 0;
-    public ILS1(Instance kro200 ) {
+    public ILS2(Instance kro200 ) {
         this.kro200 = kro200;
         distanceMatrix = kro200.getDistanceMatrix();
         solve();
@@ -26,7 +25,6 @@ class ILS1 {
         long startTime = System.currentTimeMillis();
 
         while (System.currentTimeMillis() - startTime < 2000) {
-            //y := x
             cycles_Y = new ArrayList<>(cycles_X.size());
             for (List<Integer> list : cycles_X) {
                 List<Integer> tmp = new ArrayList<>();
@@ -35,31 +33,9 @@ class ILS1 {
                 }
                 cycles_Y.add(tmp);
             }
-
-            //Perturbacja (y)
-            Random random = new Random();
-            int random_number = random.nextInt(7) + 3;
-
-            for (int i = 0; i < random_number; i++){
-                int firstNumberOfVertex = random.nextInt(cycles_Y.get(0).size());
-                int secondNumberOfVertex = random.nextInt(cycles_Y.get(0).size());
-                int randomNumber = random.nextInt(2);
-                swapVertexInILS1(cycles_Y, firstNumberOfVertex, secondNumberOfVertex, randomNumber);
-//                int randomNumber = random.nextInt(2);
-
-            }
-
-
-
-
-
-
-
-            //y := Lokalne przeszukiwanie (y)
             cycles_Y = new HillClimbing(kro200, cycles_Y).cycles;
 
             if (calcCycleLength(cycles_Y.get(0)) + calcCycleLength(cycles_Y.get(1)) < calcCycleLength(cycles_X.get(0)) + calcCycleLength(cycles_X.get(1))){
-               // x := y
                 cycles_X = cycles_Y;
             }
 
@@ -89,31 +65,6 @@ class ILS1 {
             printWriter.printf("%s,%d,%d\n","b", instance.coordinates.get(a).getKey(), instance.coordinates.get(a).getValue());
         }
         printWriter.close();
-    }
-
-    private List<List<Integer>> swapVertexInILS1(List<List<Integer>> cycles, Integer first_Number,Integer second_Number, int chooseOption){
-
-        //wymiana wierzcholkow w jednym cyklu
-        if (chooseOption == 0){
-            //wymiana w ktorym cyklu
-            Random random = new Random();
-            int whichCycle = random.nextInt(2);
-            Integer firstVertexInFirstCycleValue = cycles.get(whichCycle).get(first_Number);
-            Integer secondVertexInFirstCycleValue = cycles.get(whichCycle).get(second_Number);
-
-            cycles_Y.get(whichCycle).set(first_Number, secondVertexInFirstCycleValue);
-            cycles_Y.get(whichCycle).set(second_Number, firstVertexInFirstCycleValue);
-        }
-        //wymiana wierzcholkow miedzy cyklami
-        else if (chooseOption == 1){
-            Integer firstVertexInFirstCycleValue = cycles.get(0).get(first_Number);
-            Integer secondVertexInSecondCycleValue = cycles.get(1).get(second_Number);
-
-            cycles_Y.get(0).set(first_Number, secondVertexInSecondCycleValue);
-            cycles_Y.get(1).set(second_Number, firstVertexInFirstCycleValue);
-        }
-
-        return cycles_Y;
     }
 
 }
