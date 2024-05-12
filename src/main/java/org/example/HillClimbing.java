@@ -1,5 +1,9 @@
 package org.example;
 import javafx.util.Pair;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.*;
 import static java.lang.Math.abs;
 
@@ -17,6 +21,15 @@ public class HillClimbing {
 
     HillClimbing(Instance instance, RandomStart startingCycles){
         cycles = startingCycles.getCycles();
+        distanceMatrix = instance.getDistanceMatrix();
+        bestCyclesLength = calcCycleLength(cycles.get(0)) + calcCycleLength(cycles.get(1));
+        cycleAsize = cycles.get(0).size();
+        cycleBsize = cycles.get(1).size();
+        solve();
+    }
+
+    HillClimbing(Instance instance, List<List<Integer>> cycles){
+        this.cycles = cycles;
         distanceMatrix = instance.getDistanceMatrix();
         bestCyclesLength = calcCycleLength(cycles.get(0)) + calcCycleLength(cycles.get(1));
         cycleAsize = cycles.get(0).size();
@@ -200,5 +213,16 @@ public class HillClimbing {
         return cycles;
     }
 
-
+    public void solutionToCsv(String path, Instance instance) throws IOException {
+        FileWriter fileWriter = new FileWriter(path);
+        PrintWriter printWriter = new PrintWriter(fileWriter);
+        printWriter.print("cycle,x,y\n");
+        for (Integer a : cycles.get(0)) {
+            printWriter.printf("%s,%d,%d\n","a", instance.coordinates.get(a).getKey(), instance.coordinates.get(a).getValue());
+        }
+        for (Integer a : cycles.get(1)) {
+            printWriter.printf("%s,%d,%d\n","b", instance.coordinates.get(a).getKey(), instance.coordinates.get(a).getValue());
+        }
+        printWriter.close();
+    }
 }
