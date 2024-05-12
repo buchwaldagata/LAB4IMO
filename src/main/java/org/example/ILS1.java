@@ -21,11 +21,12 @@ class ILS1 {
     }
 
     private List<List<Integer>> solve() {
-        cycles_X = new RandomStart().getCycles();
-        cycles_X = new HillClimbing(kro200, cycles_X).cycles;
         long startTime = System.currentTimeMillis();
+        cycles_X = new RandomStart().getCycles();
+        cycles_X = new CandidatesMoves(kro200, cycles_X).cycles;
 
-        while (System.currentTimeMillis() - startTime < 2000) {
+
+        while (System.currentTimeMillis() - startTime < 32172) {
             //y := x
             cycles_Y = new ArrayList<>(cycles_X.size());
             for (List<Integer> list : cycles_X) {
@@ -49,14 +50,8 @@ class ILS1 {
 
             }
 
-
-
-
-
-
-
             //y := Lokalne przeszukiwanie (y)
-            cycles_Y = new HillClimbing(kro200, cycles_Y).cycles;
+            cycles_Y = new CandidatesMoves(kro200, cycles_Y).cycles;
 
             if (calcCycleLength(cycles_Y.get(0)) + calcCycleLength(cycles_Y.get(1)) < calcCycleLength(cycles_X.get(0)) + calcCycleLength(cycles_X.get(1))){
                // x := y
@@ -85,9 +80,11 @@ class ILS1 {
         for (Integer a : cycles_X.get(0)) {
             printWriter.printf("%s,%d,%d\n","a", instance.coordinates.get(a).getKey(), instance.coordinates.get(a).getValue());
         }
+        printWriter.printf("%s,%d,%d\n","a", instance.coordinates.get(cycles_X.get(0).get(0)).getKey(), instance.coordinates.get(cycles_X.get(0).get(0)).getValue());
         for (Integer a : cycles_X.get(1)) {
             printWriter.printf("%s,%d,%d\n","b", instance.coordinates.get(a).getKey(), instance.coordinates.get(a).getValue());
         }
+        printWriter.printf("%s,%d,%d\n","b", instance.coordinates.get(cycles_X.get(1).get(0)).getKey(), instance.coordinates.get(cycles_X.get(1).get(0)).getValue());
         printWriter.close();
     }
 

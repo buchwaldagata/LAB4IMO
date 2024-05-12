@@ -8,21 +8,19 @@ public class Main {
 
 
         Instance kroA200 = new Instance("src/main/resources/kroA200.tsp");
-        Instance kroB200 = new Instance("src/main/resources/kroB200.tsp");
+//        Instance kroB200 = new Instance("src/main/resources/kroB200.tsp");
 
         long startTime = System.nanoTime();
 
-        List<ILS1> solutions = new ArrayList<>();
+        List<ILS2> solutions = new ArrayList<>();
 
         for (int i = 0; i < 10; i++) {
-//            RandomStart startingCycles = new RandomStart();
-            solutions.add(new ILS1(kroA200));
+            solutions.add(new ILS2(kroA200));
         }
-
 
         long endTime   = System.nanoTime();
         long totalTime = (endTime - startTime)/1000000;
-        System.out.println(totalTime);
+        System.out.println("Czas łączny " + totalTime);
         int best = 0;
         double cost = 999999999;
         for (int i = 0; i < solutions.size(); i++) {
@@ -33,13 +31,13 @@ public class Main {
         }
 
         List<Double> critterValues=new ArrayList<>();
-        for (ILS1 solution: solutions) {
+        for (ILS2 solution: solutions) {
             critterValues.add(solution.bestCyclesLength);
         }
-        System.out.println(critterValues.stream().max(Double::compareTo));
-        System.out.println(critterValues.stream().min(Double::compareTo));
+        System.out.println("MAX " + critterValues.stream().max(Double::compareTo));
+        System.out.println("MIN " + critterValues.stream().min(Double::compareTo));
         if(critterValues.stream().reduce(Double::sum).isPresent()){
-            System.out.println(critterValues.stream().reduce(Double::sum).get()/Double.parseDouble(String.valueOf(critterValues.size())));
+            System.out.println("Średnia " + critterValues.stream().reduce(Double::sum).get()/Double.parseDouble(String.valueOf(critterValues.size())));
         }
 
         solutions.get(best).solutionToCsv("best.csv", kroA200);

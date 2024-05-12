@@ -27,6 +27,15 @@ public class CandidatesMoves {
         solve();
     }
 
+    CandidatesMoves(Instance instance, List<List<Integer>> cycles){
+        this.cycles = cycles;
+        distanceMatrix = instance.getDistanceMatrix();
+        bestCyclesLength = calcCycleLength(cycles.get(0)) + calcCycleLength(cycles.get(1));
+        cycleAsize = cycles.get(0).size();
+        cycleBsize = cycles.get(1).size();
+        solve();
+    }
+
     private double calcCycleLength(List<Integer> solution){
         double length = 0;
         for(int i= 0; i<solution.size()-1; i++){
